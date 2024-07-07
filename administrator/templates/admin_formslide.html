@@ -1,0 +1,52 @@
+{% extends "admin.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="content">
+    <h1>{{judul}}</h1>
+    {% comment %} <p>Gunakan {{judul}} ini sesuai dengan kebutuhan secara benar dan tepat</p> {% endcomment %}
+    <br/>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">{{judul}}</h5>
+        </div>
+     
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.judul.id_for_label }}">Judul</label>
+                        {{ form.judul }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.gambar_slide.id_for_label }}">Gambar Slide</label>
+                        {{ form.gambar_slide }}
+                    </div>
+                    <div class="form-group form-check">
+                        {{ form.aktif }}
+                        <label class="form-check-label" for="{{ form.aktif.id_for_label }}">Aktif</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary"> <i class="fas fa-save"></i> Simpan</button>
+                    <a href="{% url 'slide_admin' %}" class="btn btn-danger"><i class="fa fa-backward"></i> Kembali</a>
+                </form>
+
+                
+            </div>
+        </div>
+       
+        
+        <div class="card-footer">
+            <small class="text-muted"></small>
+        </div>
+       
+    </div>
+    
+    
+
+</div>													
+{% endblock content %}
+

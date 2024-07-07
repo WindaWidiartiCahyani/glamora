@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+    <div class="main-content">
+       
+        <!-- main content --> 
+        <div id="wrapper-site">
+            <div id="content-wrapper" class="full-width">
+                <div id="main">
+                    <section class="page-home">
+                        <!-- SHOP THE LOOK -->
+                        <div class="section spacing-10 groupbanner-special">
+                            <div class="title-block">
+                                <span>Selamat Datang Di Toko</span>
+                                <span>Glamora</span>
+                                <span>Menjual Berbagai Fashion Dan Aksesoris</span>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="lookbook owl-carousel owl-theme owl-loaded owl-drag">
+                                    <div class="item">
+                                        <!-- Module Lookbooks -->
+                                        <div class="tiva-lookbook defaul">
+                                            {% for slide in slide %}
+                                            <div class="items col-lg-12 col-sm-12 col-xs-12">
+                                                <div class="tiva-content-lookbook">
+                                                    <img class="img-fluid img-responsive" src="{{ slide.gambar_slide.url }}" alt="{{ slide.judul }}">
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- product living room -->
+                        <div class="section living-room background-none">
+                            <div class="container">
+                                <div class="tiva-row-wrap row">
+                                    <div class="col-md-12 col-xs-12 groupcategoriestab-vertical">
+                                        <div class="grouptab">
+                                            
+                                            <div class="product-tab categoriestab-left flex-9">
+                                                <div class="title-tab-content d-flex">
+                                                    <!-- tab product -->
+                                                    <ul class="nav nav-tabs row">
+                                                        <li class="col-xs-6">
+                                                            <a href="#all" data-toggle="tab" class="active">ALL PRODUCTS</a>
+                                                        </li>
+                                                        <li class="col-xs-6">
+                                                            <a href="#fashion" data-toggle="tab">FASHION</a>
+                                                        </li>
+                                                        <li class="col-xs-6">
+                                                            <a href="#aksesoris" data-toggle="tab">AKSESORIS</a>
+                                                        </li>
+                                                        <li class="col-xs-6">
+                                                            <a href="#diskon" data-toggle="tab">DISKON</a>
+                                                        </li>
+                                                    </ul>  
+                                                </div>
+                                                 <!-- tab product content -->
+                                                 <div class="tab-content">
+                                                    <!-- all Product -->
+                                                <div id="all" class="tab-pane fade in active show">
+                                                    <div class="item text-center row">
+
+                                                        {% for row in produkall %}
+                                                        <div class="col-md-3 col-xs-12">
+                                                            <div class="product-miniature js-product-miniature item-one first-item">
+                                                                <div class="thumbnail-container">
+                                                                    <a href="{% url 'produk' row.kategori.slug row.slug %}">
+                                                                        <img class="img-fluid" src="{{row.gambar.url}}" alt="img">
+
+                                                                        {% if row.gambar_satu %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_satu.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_dua %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_dua.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_tiga %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_tiga.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_empat %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_empat.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_lima %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_lima.url}}" alt="img">
+                                                                        {% endif %}
+
+                                                                    </a>
+
+                                                                    {% if row.diskon > 0 %}
+                                                                    <div class="product-flags discount">-{{row.diskon}}%</div>
+                                                                    
+                                                                    {% endif %}      
+                                                                </div>
+
+                                                                <div class="product-description">
+                                                                    <div class="product-groups">
+                                                                        <div class="product-title">
+                                                                            <a href="{% url 'produk' row.kategori.slug row.slug  %}">{{row.nama_produk}}({{row.stock}})</a>
+                                                                        </div>
+                                                                        <div class="rating">
+                                                                            <div class="star-content"></div>  
+                                                                        </div>
+                                                                        <div class="product-group-price">
+                                                                            <div class="product-price-and-shipping">
+                                                                                {% if row.diskon == 0 %}
+                                                                                <span class="price">Rp. {{row.harga|intcomma}}</span>
+                                                                                {% else %}
+                                                                                <span class="price">Rp. {{row.setela_diskon|intcomma}}</span>
+                                                                                <del class="regular-price">Rp. {{row.harga|intcomma}}</del>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="product-buttons d-flex justify-content-center">
+                                                                        <form action="{% url "cart_add" row.id %}" method="post" class="formAddToCart">
+                                                                            {% csrf_token %}
+                                                                            <input type="hidden" name="quantity" value="1">    
+                                                                            <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                        <a href="{% url 'produk' row.kategori.slug row.slug  %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                                        <!--  fashion -->
+                                                        <div id="fashion" class="tab-pane fade">
+                                                            <div class="item text-center row">
+                                                                {% for row in produk_fashion %}
+                                                                <div class="col-md-3 col-xs-12">
+                                                                    <div class="product-miniature js-product-miniature item-one first-item">
+                                                                        <div class="thumbnail-container">
+                                                                            <a href="{% url 'produk' row.kategori.slug row.slug %}">
+                                                                                <img class="img-fluid" src="{{ row.gambar.url }}" alt="img">
+                                                                                <!-- Tambahkan logika untuk gambar tambahan jika diperlukan -->
+                                                        
+                                                                                {% if row.diskon > 0 %}
+                                                                                <div class="product-flags discount">-{{ row.diskon }}%</div>
+                                                                                {% endif %}
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="product-description">
+                                                                            <div class="product-groups">
+                                                                                <div class="product-title">
+                                                                                    <a href="{% url 'produk' row.kategori.slug row.slug %}">{{ row.nama_produk }} ({{ row.stock }})</a>
+                                                                                </div>
+                                                                                <!-- Tambahan informasi lain seperti rating, harga, dll -->
+                                                                                <div class="product-group-price">
+                                                                                    <div class="product-price-and-shipping">
+                                                                                        {% if row.diskon == 0 %}
+                                                                                        <span class="price">Rp. {{ row.harga|intcomma }}</span>
+                                                                                        {% else %}
+                                                                                        <span class="price">Rp. {{ row.setela_diskon|intcomma }}</span>
+                                                                                        <del class="regular-price">Rp. {{ row.harga|intcomma }}</del>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="product-buttons d-flex justify-content-center">
+                                                                                <form action="{% url 'cart_add' row.id %}" method="post" class="formAddToCart">
+                                                                                    {% csrf_token %}
+                                                                                    <input type="hidden" name="quantity" value="1">
+                                                                                    <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                                    </button>
+                                                                                </form>
+                                                                                <a href="{% url 'produk' row.kategori.slug row.slug %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                               
+
+
+                                                        <!-- aksesoris -->
+                                                        <div id="aksesoris" class="tab-pane fade">
+                                                            <div class="row">
+                                                                {% for row in aksesoris %}
+                                                                <div class="col-md-3 col-xs-12">
+                                                                    <div class="item text-center">
+                                                                        <div class="product-miniature js-product-miniature item-one first-item">
+                                                                            <div class="thumbnail-container">
+                                                                                <a href="{% url 'produk' row.kategori.slug row.slug %}">
+                                                                                    <img class="img-fluid image-cover" src="{{ row.gambar.url }}" alt="img">
+                                                                                    {% if row.gambar_satu %}
+                                                                                    <img class="img-fluid image-secondary" src="{{ row.gambar_satu.url }}" alt="img">
+                                                                                    {% endif %}
+                                                                                    {% if row.gambar_dua %}
+                                                                                    <img class="img-fluid image-secondary" src="{{ row.gambar_dua.url }}" alt="img">
+                                                                                    {% endif %}
+                                                                                    {% if row.gambar_tiga %}
+                                                                                    <img class="img-fluid image-secondary" src="{{ row.gambar_tiga.url }}" alt="img">
+                                                                                    {% endif %}
+                                                                                    {% if row.gambar_empat %}
+                                                                                    <img class="img-fluid image-secondary" src="{{ row.gambar_empat.url }}" alt="img">
+                                                                                    {% endif %}
+                                                                                    {% if row.gambar_lima %}
+                                                                                    <img class="img-fluid image-secondary" src="{{ row.gambar_lima.url }}" alt="img">
+                                                                                    {% endif %}
+                                                                                </a>
+                                                        
+                                                                                {% if row.diskon > 0 %}
+                                                                                <div class="product-flags discount">-{{ row.diskon }}%</div>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                            <div class="product-description">
+                                                                                <div class="product-groups">
+                                                                                    <div class="product-title">
+                                                                                        <a href="{% url 'produk' row.kategori.slug row.slug %}">{{ row.nama_produk }} ({{ row.stock }})</a>
+                                                                                    </div>
+                                                        
+                                                                                    <div class="product-group-price">
+                                                                                        <div class="product-price-and-shipping">
+                                                                                            {% if row.diskon == 0 %}
+                                                                                            <span class="price">Rp. {{ row.harga|intcomma }}</span>
+                                                                                            {% else %}
+                                                                                            <span class="price">Rp. {{ row.setela_diskon|intcomma }}</span>
+                                                                                            <del class="regular-price">Rp. {{ row.harga|intcomma }}</del>
+                                                                                            {% endif %}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="product-buttons d-flex justify-content-center">
+                                                                                    <form action="{% url 'cart_add' row.id %}" method="post" class="formAddToCart">
+                                                                                        {% csrf_token %}
+                                                                                        <input type="hidden" name="quantity" value="1">
+                                                                                        <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                                        </button>
+                                                                                    </form>
+                                                                                    <a href="{% url 'produk' row.kategori.slug row.slug %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                        
+
+                                                        <!-- Diskon -->
+                                            <div id="diskon" class="tab-pane fade">
+                                                <div class="item text-center row">
+                                                    {% for row in produkdiskon %}
+                                                        <div class="col-md-3 col-xs-12">
+                                                            <div class="product-miniature js-product-miniature item-one first-item">
+                                                                <div class="thumbnail-container">
+                                                                    <a href="{% url 'produk' row.kategori.slug row.slug  %}">
+                                                                        <img class="img-fluid image-cover" src="{{row.gambar.url}}" alt="img">
+
+                                                                        {% if row.gambar_satu %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_satu.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_dua %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_dua.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_tiga %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_tiga.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_empat %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_empat.url}}" alt="img">
+                                                                        {% endif %}
+                                                                        {% if row.gambar_lima %}
+                                                                        <img class="img-fluid image-secondary" src="{{row.gambar_lima.url}}" alt="img">
+                                                                        {% endif %}
+                                                                    
+                                                                    </a>
+
+                                                                    {% if row.diskon > 0 %}
+                                                                    <div class="product-flags discount">-{{row.diskon}}%</div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="product-description">
+                                                                    <div class="product-groups">
+                                                                        <div class="product-title">
+                                                                            <a href="{% url 'produk' row.kategori.slug row.slug  %}">{{row.nama_produk}}({{row.stock}})</a>
+                                                                        </div>
+                                                                        
+                                                                        <div class="product-group-price">
+                                                                            <div class="product-price-and-shipping">
+                                                                                {% if row.diskon == 0 %}
+                                                                                <span class="price">Rp. {{row.harga|intcomma}}</span>
+                                                                                {% else %}
+                                                                                <span class="price">Rp. {{row.setela_diskon|intcomma}}</span>
+                                                                                <del class="regular-price">Rp. {{row.harga|intcomma}}</del>
+
+                                                                            
+                                                                                {% endif %}
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="product-buttons d-flex justify-content-center">
+                                                                        <form action="{% url "cart_add" row.id %}" method="post" class="formAddToCart">
+                                                                            {% csrf_token %} 
+                                                                            <input type="hidden" name="quantity" value="1">    
+                                                                                
+                                                                        <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                            <a href="{% url 'produk' row.kategori.slug row.slug  %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                            </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                        <!-- banner -->
+                        <div class="section spacing-10 group-image-special">
+                            <div class="row"> 
+                                <div class="col-lg-4 col-md-4 banner1">
+                                    <div class="effect">
+                                        <a href="#">
+                                            <img class="img-fluid width-100" src="{% static 'img/home/effect5.jpg' %}" alt="banner-1" title="banner-1">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 banner1">
+                                    <div class="effect">
+                                        <a href="#">
+                                            <img class="img-fluid width-100" src="{% static 'img/home/effect6.jpg' %}" alt="banner-2" title="banner-2">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 banner1">
+                                    <div class="effect">
+                                        <a href="#">
+                                            <img class="img-fluid width-100" src="{% static 'img/home/effect7.jpg' %}" alt="banner-2" title="banner-2">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 banner1">
+                                    <div class="effect">
+                                        <a href="#">
+                                            <img class="img-fluid width-100" src="{% static 'img/home/effect8.jpg' %}" alt="banner-2" title="banner-2">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 banner1">
+                                    <div class="effect">
+                                        <a href="#">
+                                            <img class="img-fluid width-100" src="{% static 'img/home/effect9.jpg' %}" alt="banner-2" title="banner-2">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="section new-arrivals col-lg-6 col-xs-6">
+                                    <div class="tab-content">
+                                        <div class="title-product">
+                                            <h2>Produk Diskon</h2>
+                                        </div>
+                                        <div class="category-product-index owl-carousel owl-theme owl-loaded owl-drag">
+                                            {% comment %}  {% endcomment %}
+                                            {% for row in produkdiskon %}
+                                            <div class="item text-center">
+                                                <div class="product-miniature js-product-miniature item-one first-item">
+                                                    <div class="thumbnail-container">
+                                                        <a href="{% url 'produk' row.kategori.slug row.slug  %}">
+                                                            <img class="img-fluid image-cover" src="{{row.gambar.url}}" alt="img">
+
+                                                            {% if row.gambar_satu %}
+                                                                <img class="img-fluid image-secondary" src="{{row.gambar_satu.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_dua %}
+                                                                <img class="img-fluid image-secondary" src="{{row.gambar_dua.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_tiga %}
+                                                                <img class="img-fluid image-secondary" src="{{row.gambar_tiga.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_empat %}
+                                                                <img class="img-fluid image-secondary" src="{{row.gambar_empat.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_lima %}
+                                                                <img class="img-fluid image-secondary" src="{{row.gambar_lima.url}}" alt="img">
+                                                            {% endif %}
+                                                        </a>
+                                                        
+                                                    </div>
+                                                    <div class="product-description">
+                                                        <div class="product-groups">
+                                                            <div class="product-title">
+                                                                <a href="{% url 'produk' row.kategori.slug row.slug  %}">{{row.nama_produk}}({{row.stock}})</a>
+                                                            </div>
+                                                            <div class="product-group-price">
+                                                                <div class="product-price-and-shipping">
+                                                                    {% if row.diskon == 0 %}
+                                                                    <span class="price">Rp. {{row.harga|intcomma}}</span>
+                                                                    {% else %}
+                                                                    <span class="price">Rp. {{row.setela_diskon|intcomma}}</span>
+                                                                    <del class="regular-price">Rp. {{row.harga|intcomma}}</del>
+
+                                                                
+                                                                    {% endif %}
+                                                          
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="product-buttons d-flex justify-content-center">
+                                                            <form action="{% url "cart_add" row.id %}" method="post" class="formAddToCart">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="quantity" value="1">    
+                                                            <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                            </button>
+                                                        </form>
+                                                           
+                                                            <a href="{% url 'produk' row.kategori.slug row.slug  %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                              
+                                            </div>
+                                            {% endfor %}
+                                            {% comment %}  {% endcomment %}
+                                           
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="section best-sellers col-lg-6 col-xs-6">
+                                    <div class="tab-content">
+                                        <div class="title-product">
+                                            <h2>Semua Produk</h2>
+                                            
+                                        </div>
+                                        <div class="category-product owl-carousel owl-theme owl-loaded owl-drag">
+                                            {% for row in produkall %}
+                                            <div class="item text-center">
+                                                <div class="product-miniature js-product-miniature item-one first-item">
+                                                    <div class="thumbnail-container">
+                                                        <a href="{% url 'produk' row.kategori.slug row.slug  %}">
+                                                            <img class="img-fluid image-cover" src="{{row.gambar.url}}" alt="img">
+
+                                                            {% if row.gambar_satu %}
+                                                            <img class="img-fluid image-secondary" src="{{row.gambar_satu.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_dua %}
+                                                            <img class="img-fluid image-secondary" src="{{row.gambar_dua.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_tiga %}
+                                                            <img class="img-fluid image-secondary" src="{{row.gambar_tiga.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_empat %}
+                                                            <img class="img-fluid image-secondary" src="{{row.gambar_empat.url}}" alt="img">
+                                                            {% endif %}
+                                                            {% if row.gambar_lima %}
+                                                            <img class="img-fluid image-secondary" src="{{row.gambar_lima.url}}" alt="img">
+                                                            {% endif %}
+                                                        </a>
+
+
+                                                        {% if row.diskon > 0 %}
+                                                        <div class="product-flags discount">-{{row.diskon}}%</div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="product-description">
+                                                        <div class="product-groups">
+                                                            <div class="product-title">
+                                                                <a href="{% url 'produk' row.kategori.slug row.slug  %}">{{row.nama_produk}}({{row.stock}})</a>
+                                                            </div>
+                                                            <div class="rating">
+                                                                <div class="star-content">
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-group-price">
+                                                                <div class="product-price-and-shipping">
+                                                                    {% if row.diskon == 0 %}
+                                                                    <span class="price">Rp. {{row.harga|intcomma}}</span>
+                                                                    {% else %}
+                                                                    <span class="price">Rp. {{row.setela_diskon|intcomma}}</span>
+                                                                    <del class="regular-price">Rp. {{row.harga|intcomma}}</del>
+
+                                                                
+                                                                    {% endif %}
+    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="product-buttons d-flex justify-content-center">
+                                                            <form action="{% url "cart_add" row.id %}" method="post" class="formAddToCart">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="quantity" value="1">    
+                                                                <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                </button>
+                                                            </form>
+                                                            <a href="{% url 'produk' row.kategori.slug row.slug  %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

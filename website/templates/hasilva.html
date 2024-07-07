@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- main content -->
+<br/>
+<br/>
+
+
+<div class="main-content mb-4" >
+    <div id="wrapper-site">
+        <div id="content-wrapper">
+            
+            <!-- breadcrumb -->
+            <nav class="breadcrumb-bg">
+                <div class="container no-index">
+                    <div class="breadcrumb">
+                        <ol>
+                            <li>
+                                <a href="{% url 'beranda' %}">
+                                    <span>Beranda</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Halaman Keterangan Payment Gateway</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </nav>
+            <div id="main">
+                <div class="page-home">
+                    <div class="container">
+                        <h2 class="text-center title-page">{{pesan | upper}}</h2>
+                        <div class="row-inhert">
+                            
+                            <div class="input-contact">
+                               
+                                <div class="d-flex justify-content-center">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <div class="contact-form">
+                                                                               
+                                                
+                                                <div>
+                                                    <a href="{% url 'datapembelian' %}" class="btn" name="submitMessage">
+                                                       
+                                                        <img class="img-fl" src=" {% static 'img/other/contact_email.png' %}" alt="img"> Kembali
+                                                    </a>
+                                                </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}  

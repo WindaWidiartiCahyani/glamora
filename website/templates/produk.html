@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- main content -->
+<br/>
+<br/>
+
+<div class="main-content" >
+    <div id="wrapper-site">
+        <div id="content-wrapper">
+            
+            <!-- breadcrumb -->
+            <nav class="breadcrumb-bg">
+                <div class="container no-index">
+                    <div class="breadcrumb">
+                        <ol>
+                            <li>
+                                <a href="{% url 'beranda' %}">
+                                    <span>Beranda</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Produk <b>{{produk.nama_produk}}</b></span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </nav>
+            <div class="container">
+                <div class="content">
+                    <div class="row">
+                        <div class="sidebar-3 sidebar-collection col-lg-3 col-md-3 col-sm-4">
+
+                            <!-- category -->
+                            <div class="sidebar-block">
+                                <br>
+                                <div class="title-block"> Kategori Produk</div>
+                                <div class="block-content">
+                                </br>  
+                                    {% for row in kategori %}
+                                    <div class="cateTitle hasSubCategory open level1">
+                                        <span class="arrow collapse-icons collapsed" data-toggle="collapse" data-target="#{{row.slug}}">
+                                            <i class="zmdi zmdi-minus"></i>
+                                            <i class="zmdi zmdi-plus"></i>
+                                        </span>
+                                        <a class="cateItem" href="#"> <br> {{row.nama}} </br></a>
+                                        <div class="subCategory collapse" id="{{row.slug}}" aria-expanded="true" role="status">
+                                            
+                                            {% for rw in row.get_produk %}
+                                            <div class="cateTitle">
+                                                <a href="{% url 'produk' rw.kategori.slug rw.slug  %}" class="cateItem">{{rw.nama_produk}}</a>
+                                            </div>
+                                            {% endfor %}
+                                           
+                                           
+                                        </div>
+                                    </div>
+
+                                    {% endfor %}
+                                  
+                                    {% comment %}  {% endcomment %}
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- best seller -->
+                             <div class="sidebar-block">
+                                <div class="title-block">
+                                    Produk Diskon
+                                </div>
+                                <div class="product-content tab-content">
+                                    <div class="row">
+                                        
+                                        {% for row in produkdiskon %}
+                                        <div class="item col-md-12">
+                                            <div class="product-miniature item-one first-item d-flex">
+                                                <div class="thumbnail-container border">
+                                                    <a href="{% url 'produk' row.kategori.slug row.slug  %}">
+                                                        <img class="img-fluid image-cover" src="{{row.gambar.url}}" alt="img">
+
+                                                       {% if row.gambar_satu %}
+                                                        <img class="img-fluid image-secondary" src="{{row.gambar_satu.url}}" alt="img">
+                                                       {% endif %}
+                                                       {% if row.gambar_dua %}
+                                                        <img class="img-fluid image-secondary" src="{{row.gambar_dua.url}}" alt="img">
+                                                       {% endif %}
+                                                       {% if row.gambar_tiga %}
+                                                        <img class="img-fluid image-secondary" src="{{row.gambar_tiga.url}}" alt="img">
+                                                       {% endif %}
+                                                       {% if row.gambar_empat %}
+                                                        <img class="img-fluid image-secondary" src="{{row.gambar_empat.url}}" alt="img">
+                                                       {% endif %}
+                                                       {% if row.gambar_lima %}
+                                                        <img class="img-fluid image-secondary" src="{{row.gambar_lima.url}}" alt="img">
+                                                       {% endif %}
+                                                       
+                                                    </a>
+                                                    
+                                                </div>
+                                                <div class="product-description">
+                                                    <div class="product-groups">
+                                                        <div class="product-title">
+                                                            <a href="{% url 'produk' row.kategori.slug row.slug  %}">{{row.nama_produk}}({{row.stock}})</a>
+                                                        </div>
+                                                       
+                                                        <div class="product-group-price">
+                                                            <div class="product-price-and-shipping">
+                                                                {% if row.diskon == 0 %}
+                                                                <span class="price">Rp.{{row.harga|intcomma}}</span>
+                                                                {% else %}
+                                                                <span class="price">Rp.{{row.setela_diskon|intcomma}}</span>
+                                                                <del class="regular-price">Rp.{{row.harga|intcomma}}</del>
+
+                                                            
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                       
+                                        
+                                    </div>
+                                </div>
+
+                            </div> 
+
+                            <!-- product tag -->
+                          
+                        </div>
+                        <div class="col-sm-8 col-lg-9 col-md-9">
+                            <div class="main-product-detail">
+                                <h2>{{produk.nama_produk}}</h2>
+                                <div class="product-single row">
+                                    <div class="product-detail col-xs-12 col-md-5 col-sm-5">
+                                        <div class="page-content" id="content">
+                                            <div class="images-container">
+                                                <div class="js-qv-mask mask tab-content border">
+                                                   
+                                                    <div id="item1" class="tab-pane fade active in show">
+                                                        <img src="{{produk.gambar.url}}" alt="img">
+                                                    </div>
+
+                                                    <div id="item5" class="tab-pane fade">
+                                                    {% if produk.gambar_satu %}
+                                                        <img src="{{produk.gambar_satu.url}}" alt="img">
+                                                    {% endif %}
+                                                       
+                                                    </div>
+                                                    <div id="item3" class="tab-pane fade">
+                                                    {% if produk.gambar_dua %}
+                                                        <img src="{{produk.gambar_dua.url}}" alt="img">
+                                                    {% endif %}
+                                                       
+                                                    </div>
+                                                    <div id="item6" class="tab-pane fade">
+                                                        {% if produk.gambar_tiga %}
+                                                        <img src="{{produk.gambar_tiga.url}}" alt="img">
+                                                    {% endif %}
+                                                    </div>
+                                                    <div class="layer hidden-sm-down" data-toggle="modal" data-target="#product-modal">
+                                                        <i class="fa fa-expand"></i>
+                                                    </div>
+                                                </div>
+
+                                                <ul class="product-tab nav nav-tabs d-flex">
+                                                    <li class="active col">
+                                                        <a href="#item1" data-toggle="tab" aria-expanded="true" class="active show">
+                                                            <img src="{{produk.gambar.url}}" alt="img">
+                                                        </a>
+                                                    </li>
+                                                    <li class="col">
+                                                        <a href="#item5" data-toggle="tab">
+                                                        {% if produk.gambar_satu %}
+                                                                <img src="{{produk.gambar_satu.url}}" alt="img">
+                                                        {% endif %}
+                                                        </a>
+                                                    </li>
+                                                    <li class="col">
+                                                        <a href="#item3" data-toggle="tab">
+                                                            {% if produk.gambar_dua %}
+                                                            <img src="{{produk.gambar_dua.url}}" alt="img">
+                                                        {% endif %}
+                                                        </a>
+                                                    </li>
+                                                    <li class="col">
+                                                        <a href="#item6" data-toggle="tab">
+                                                            {% if produk.gambar_tiga %}
+                                                            <img src="{{produk.gambar_tiga.url}}" alt="img">
+                                                        {% endif %}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="modal fade" id="product-modal" role="dialog">
+                                                    <div class="modal-dialog">
+
+                                                        <!-- Modal content-->
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <div class="modal-body">
+                                                                    <div class="product-detail">
+                                                                        <div>
+                                                                            <div class="images-container">
+                                                                                <div class="js-qv-mask mask tab-content">
+                                                                                    <div id="modal-item1" class="tab-pane fade active in show">
+                                                                                        <img src="{{produk.gambar.url}}" alt="img">
+                                                                                    </div>
+                                                                                    <div id="modal-item2" class="tab-pane fade">
+                                                                                    {% if produk.gambar_satu %}
+                                                                                        <img src="{{produk.gambar_satu.url}}" alt="img">
+                                                                                    {% endif %}
+                                                                                    </div>
+                                                                                    <div id="modal-item3" class="tab-pane fade">
+                                                                                        {% if produk.gambar_dua %}
+                                                                                            <img src="{{produk.gambar_dua.url}}" alt="img">
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                    <div id="modal-item4" class="tab-pane fade">
+                                                                                        {% if produk.gambar_tiga %}
+                                                                                        <img src="{{produk.gambar_tiga.url}}" alt="img">
+                                                                                    {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <ul class="product-tab nav nav-tabs">
+                                                                                    <li class="active">
+                                                                                        <a href="#modal-item1" data-toggle="tab" class=" active show">
+                                                                                            <img src="{{produk.gambar.url}}" alt="img">
+                                                                                        </a>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <a href="#modal-item2" data-toggle="tab">
+                                                                                        {% if produk.gambar_satu %}
+                                                                                            <img src="{{produk.gambar_satu.url}}" alt="img">
+                                                                                        {% endif %}
+                                                                                        </a>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <a href="#modal-item3" data-toggle="tab">
+                                                                                            {% if produk.gambar_dua %}
+                                                                                            <img src="{{produk.gambar_dua.url}}" alt="img">
+                                                                                        {% endif %}
+                                                                                         
+                                                                                        </a>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <a href="#modal-item4" data-toggle="tab">
+                                                                                            {% if produk.gambar_tiga %}
+                                                                                            <img src="{{produk.gambar_tiga.url}}" alt="img">
+                                                                                        {% endif %}
+                                                                                        </a>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-info col-xs-12 col-md-7 col-sm-7">
+                                        <div class="detail-description">
+                                            <div class="price-del">
+                                                {% if produk.diskon == 0 %}
+                                                                                    <span class="price">Rp. {{produk.harga|intcomma}}</span>
+                                                                                    {% else %}
+                                                                                    <span class="price">Rp. {{produk.setela_diskon|intcomma}}</span>
+                                                                                    <del class="regular-price">Rp. {{produk.harga|intcomma}}</del>
+
+                                                                                
+                                                                                    {% endif %}
+                                                <span class="float-right">
+                                                    <span class="availb">Ketersediaan: </span>
+                                                    <span class="check">
+                                                        <i class="fa fa-check-square-o" aria-hidden="true"></i>STOCK : {{produk.stock}}</span>
+                                                </span>
+                                            </div>
+                                            <p class="description">{{produk.keterangan}}</p>
+                                        <form action="{% url "cart_add" produk.id %}" method="post" class="cart-quantity">
+                                            {% csrf_token %}
+                                            <div class="has-border cart-area">
+                                                <div class="product-quantity">
+                                                    <div class="qty">
+                                                        <div class="input-group">
+                                                            <div class="quantity">
+                                                                <span class="control-label">QTY : </span>
+                                                                <input type="text" name="quantity" id="number-input" value="1" class="input-group form-control">
+                                                                <input type="hidden" name="stock" id="stock" value="{{produk.stock}}" class="input-group form-control">
+
+                                                                <span class="input-group-btn-vertical">
+                                                                    <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" id="plus-btn" type="button">
+                                                                        +
+                                                                    </button>
+                                                                    <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" id="minus-btn" type="button">
+                                                                        -
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                            {{ cart_product_form }}
+                                                            <span class="add">
+                                                                <button class="btn btn-primary add-to-cart add-item" data-button-action="add-to-cart" type="submit">
+                                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                    <span>Tambah diKeranjang</span>
+                                                                </button>
+                                                                
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <p class="product-minimal-quantity">
+                                                </p>
+                                            </div>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="review">
+                                  <hr/>
+                                </div>
+                                <div class="related">
+                                    <div class="title-tab-content  text-center">
+                                        <div class="title-product justify-content-start">
+                                            <h2>Produk Terkait</h2>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content">
+                                        <div class="row">
+                                            {% for rr in related %}
+                                            {% comment %}  {% endcomment %}
+                                            <div class="item text-center col-md-4">
+                                                <div class="product-miniature js-product-miniature item-one first-item">
+                                                    <div class="thumbnail-container border">
+                                                        <a href="{% url 'produk' rr.kategori.slug rr.slug  %}">
+                                                            <img class="img-fluid image-cover" src="{{rr.gambar.url}}" alt="img">
+
+                                                                           {% if rr.gambar_satu %}
+                                                                            <img class="img-fluid image-secondary" src="{{rr.gambar_satu.url}}" alt="img">
+                                                                           {% endif %}
+                                                                           {% if rr.gambar_dua %}
+                                                                            <img class="img-fluid image-secondary" src="{{rr.gambar_dua.url}}" alt="img">
+                                                                           {% endif %}
+                                                                           {% if rr.gambar_tiga %}
+                                                                            <img class="img-fluid image-secondary" src="{{rr.gambar_tiga.url}}" alt="img">
+                                                                           {% endif %}
+                                                                           {% if rr.gambar_empat %}
+                                                                            <img class="img-fluid image-secondary" src="{{rr.gambar_empat.url}}" alt="img">
+                                                                           {% endif %}
+                                                                           {% if rr.gambar_lima %}
+                                                                            <img class="img-fluid image-secondary" src="{{rr.gambar_lima.url}}" alt="img">
+                                                                           {% endif %}
+                                                          
+                                                        </a>
+                                                       
+                                                    </div>
+                                                    <div class="product-description">
+                                                        <div class="product-groups">
+                                                            <div class="product-title">
+                                                                <a href="{% url 'produk' rr.kategori.slug rr.slug  %}">{{rr.nama_produk}}({{rr.stock}})</a>
+                                                            </div>
+                                                          
+                                                            <div class="product-group-price">
+                                                                <div class="product-price-and-shipping">
+                                                                    {% if rr.diskon == 0 %}
+                                                                    <span class="price">Rp. {{rr.harga|intcomma}}</span>
+                                                                    {% else %}
+                                                                    <span class="price">Rp. {{rr.setela_diskon|intcomma}}</span>
+                                                                    <del class="regular-price">Rp. {{rr.harga|intcomma}}</del>
+
+                                                                
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="product-buttons d-flex justify-content-center">
+                                                           
+                                                            <form action="{% url "cart_add" rr.id %}" method="post" class="formAddToCart">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="quantity" value="1">    
+                                                                <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                                </button>
+                                                            </form>
+                                                          
+                                                            <a href="{% url 'produk' rr.kategori.slug rr.slug  %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% comment %}  {% endcomment %}
+                                            {% endfor %}
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+      // Tombol Plus
+      $("#plus-btn").on("click", function() {
+        var value = parseInt($("#number-input").val());
+        var stok = parseInt($("#stock").val());
+        if (value < stok) {
+            $("#number-input").val(value + 1);
+          } else {
+           
+            swal({
+                title: "Oops,...",
+                text: "Stok tidak mencukupi.",
+                icon: "error",
+              });
+          }
+      });
+
+      // Tombol Minus
+      $("#minus-btn").on("click", function() {
+        var value = parseInt($("#number-input").val());
+        if (value > 0) {
+          $("#number-input").val(value - 1);
+        }
+      });
+    });
+  </script>
+
+
+
+
+
+
+
+{% endblock content %}  

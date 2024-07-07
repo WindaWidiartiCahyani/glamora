@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+  <style>
+    /* CSS untuk tabel */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* CSS untuk judul kolom */
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    /* CSS untuk baris ganjil */
+    tr:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+
+    /* CSS saat cursor diarahkan ke baris */
+    tr:hover {
+      background-color: #ddd;
+    }
+    @media (max-width: 600px) {
+        table {
+          font-size: 12px;
+        }
+        
+        th, td {
+          padding: 6px;
+        }
+      }
+  </style>
+
+<!-- main content -->
+<br/>
+<br/>
+
+
+<div class="main-content mb-4" >
+    <div id="wrapper-site">
+        <div id="content-wrapper">
+            
+            <!-- breadcrumb -->
+            <nav class="breadcrumb-bg">
+                <div class="container no-index">
+                    <div class="breadcrumb">
+                        <ol>
+                            <li>
+                                <a href="{% url 'beranda' %}">
+                                    <span>Beranda</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Data Pembelian</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </nav>
+           
+            <div id="wrapper-site">
+                <div class="container">
+                    <div class="row">
+                        <div id="content-wrapper" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 onecol">
+                            <div id="main">
+                                <table>
+                                    <tr>
+                                      <th>No</th>
+                                      <th>No Transaksi</th>
+                                      <th>Keterangan Pesanan</th>
+                                      <th>Total Pembelian</th>
+                                      <th>Status Pembelian</th>
+                                      <th>Aksi</th>
+                                    </tr>
+                                {% for t in transaksi %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ t.no_transaksi }}</td>
+                                    <td>{{ t.keterangan_pesanan }}</td>
+                                   
+                                    <td>{{ t.status }}</td>
+                                    <td>Rp. {{ t.total_transaksi | intcomma }}</td>
+                                    <td>
+                                      {% if t.status == "Lunas" %}
+                                      <button class="btn btn-danger detail-btn" disabled>Lunas</button>
+                                      {% else %}
+                                      <a href="{% url 'isivitual' t.no_transaksi %}" class="btn btn-primary detail-btn" data-notransaksi="{{ t.no_transaksi }}">Bayar</a>
+                                      {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                   
+                                    <td colspan="6" align="center"> Data Kosong </td>
+                                  </tr>
+                                {% endfor %}
+                                   
+                                   
+                                  </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}  

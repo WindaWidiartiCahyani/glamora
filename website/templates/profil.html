@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- main content -->
+<br/>
+<br/>
+
+
+<div class="main-content mb-4" >
+    <div id="wrapper-site">
+        <div id="content-wrapper">
+            
+            <!-- breadcrumb -->
+            <nav class="breadcrumb-bg">
+                <div class="container no-index">
+                    <div class="breadcrumb">
+                        <ol>
+                            <li>
+                                <a href="{% url 'beranda' %}">
+                                    <span>Beranda</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Profil</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </nav>
+            <div id="main">
+                <div class="page-home">
+                    <div class="container">
+                        <div class="about-us-content">
+                            
+                            <h1 class="title-page"> <br>Profil Kami </br></h1>
+                            {% for row in profil %}
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 right">
+                                    <a href="#">
+                                        {% if row.gambar %}
+                                        
+                                        <img class="img-fluid" src="{{row.gambar.url}}" alt="#" />
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 left">
+                                    <div class="cms-block f-right">
+                                        <h3 class="page-subheading">{{row.nama | upper}}</h3>
+                                        <p>{{row.keterangan}}</p>
+                                        
+                                    </div>
+                                </div>
+                               
+                            </div>
+                            {% endfor %}
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}  

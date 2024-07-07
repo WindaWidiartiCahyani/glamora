@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- main content -->
+<br/>
+<br/>
+
+
+<div class="main-content" id="cart">
+    <div id="wrapper-site">
+        <div id="content-wrapper">
+            
+            <!-- breadcrumb -->
+            <nav class="breadcrumb-bg">
+                <div class="container no-index">
+                    <div class="breadcrumb">
+                        <ol>
+                            <li>
+                                <a href="{% url 'beranda' %}">
+                                    <span>Beranda</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Pemesanan</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </nav>
+            <div class="container">
+                <div class="row">
+                    <div id="content-wrapper" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 onecol">
+                        <section id="main">
+                            <div class="cart-grid row">
+                                <div class="col-md-9 col-xs-12 check-info">
+                                    <h1 class="title-page">Keranjang Belanja</h1>
+                                    <div class="cart-container">
+                                        <div class="cart-overview js-cart">
+                                            <ul class="cart-items">
+                                                {% for item in cart %}
+                                                {% with produk=item.produk  %}
+                                                <form action="{% url "cart_add" produk.id %}" method="post">
+                                                <li class="cart-item">
+                                                    <div class="product-line-grid row justify-content-between">
+                                                        <!--  product left content: image-->
+                                                        <div class="product-line-grid-left col-md-2">
+                                                            <span class="product-image media-middle">
+                                                                <a href="">
+                                                                    <img class="img-fluid" src="{{produk.gambar.url}}" alt="{{produk.nama_produk}}">
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-line-grid-body col-md-6">
+                                                            <div class="product-line-info">
+                                                                <a class="label" href="" data-id_customization="0">{{produk.nama_produk}}</a>
+                                                            </div>
+                                                            <div class="product-line-info product-price">
+                                                                <span class="value">Rp. {{ item.price|intcomma }}</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label-atrr">Jumlah:</span>
+                                                                <span class="value">{{item.quantity}}</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label-atrr">Kategori Produk:</span>
+                                                                <span class="value">{{produk.kategori.nama}}</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="product-line-grid-right text-center product-line-actions col-md-4">
+                                                            <div class="row">
+                                                                <div class="col-md-5 col qty">
+                                                                    <div class="label">Qty:</div>
+                                                                    <div class="quantity">
+                                                                        <input type="text" name="quantity"  id="number-input-{{ produk.id }}" value="{{item.quantity}}" class="input-group form-control">
+                                                                        <input type="hidden" name="stock" id="stock" value="{{produk.stock}}" class="input-group form-control">
+                                                                        <span class="input-group-btn-vertical">
+                                                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up naik" data-id="{{ produk.id }}" type="button">
+                                                                                +
+                                                                            </button>
+                                                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down turun" data-id="{{ produk.id }}" type="button">
+                                                                                -
+                                                                            </button>
+                                                                            {% csrf_token %}
+                                                                        {{ item.update_quantity_form.quantity }}
+                                                                        {{ item.update_quantity_form.update }}
+                                                                        
+                                                                       
+                                                                       
+                                                                        </span>
+                                                                        <hr/>
+                                                                        <button type="submit" class="btn btn-info">
+                                                                            Update
+                                                                         </button>
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                                <div class="col-md-5 col price">
+                                                                    <div class="label">Total:</div>
+                                                                    <div class="product-price total">
+                                                                        Rp. {{ item.total_price|intcomma }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2 col text-xs-right align-self-end">
+                                                                    <div class="cart-line-product-actions ">
+                                                                        <a class="remove-from-cart" rel="nofollow" href="{% url "cart_remove" produk.id %}" data-link-action="delete-from-cart" data-id-product="1">
+                                                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </form>
+                                                {% endwith %}
+                                                {% empty %}
+                                                <li><b>Belum ada Pemesanan</b></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'beranda' %}" class="continue btn btn-primary pull-xs-right">
+                                        Lanjut Belanja
+                                    </a>
+                                    {% if keranjang|length > 0 %}
+                                    <a href="{% url 'checkout' %}" class="continue btn btn-primary pull-xs-left">
+                                        Checkout
+                                     </a>
+                                   
+                                    {% endif %}
+                                    
+                                </div>
+                                
+                                <div class="cart-grid-right col-xs-12 col-lg-3">
+                                    <div class="cart-summary">
+                                        
+                                         <div class="cart-detailed-totals">
+                                            <div class="cart-summary-products">
+                                                <div class="summary-label"></div>
+                                            </div>
+                                            
+                                            <div class="cart-summary-line" id="cart-subtotal-products">
+                                                <span class="label js-subtotal">
+                                                    Jumlah Total Produk:
+                                                </span>
+                                                <span class="value">Rp. {{ cart.get_total_price|intcomma }}</span>
+                                            </div>
+                                            {% with totail_items=keranjang|length %}
+                                            <div class="cart-summary-line" id="cart-subtotal-shipping">
+                                                <span class="label">
+                                                   Jumlah Semua Produk:
+                                                </span>
+                                                <span class="value">
+                                                    
+                                                    {% if keranjang|length > 0 %}
+                                                    {{ totail_items }}
+                                                 
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                        
+                                                </span>
+                                                <div>
+                                                    <small class="value"></small>
+                                                </div>
+                                            </div>
+                                            {% endwith %}
+                                            
+                                        </div> 
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+      // Tombol Plus
+      $(".naik").on("click", function() {
+        
+        var itemId = $(this).data("id");
+        var numberInput = $("#number-input-" + itemId);
+        var stok = parseInt($("#stock").val());
+        var value = parseInt(numberInput.val());
+        if (value < stok) {
+            numberInput.val(value + 1);
+          } else {
+           
+            swal({
+                title: "Oops,...",
+                text: "Stok tidak mencukupi.",
+                icon: "error",
+              });
+          }
+      });
+
+      // Tombol Minus
+      $(".turun").on("click", function() {
+        var itemId = $(this).data("id");
+        var numberInput = $("#number-input-" + itemId);
+        var value = parseInt(numberInput.val());
+        
+        if (value > 0) {
+            numberInput.val(value - 1);
+        }
+      });
+    });
+  </script>
+{% endblock content %}  

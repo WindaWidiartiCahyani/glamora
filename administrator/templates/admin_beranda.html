@@ -1,0 +1,110 @@
+{% extends "admin.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+	
+
+  <div class="content">
+    <h1>{{judul}}</h1>
+    <br/>
+    {% comment %} <p>Gunakan {{judul}} ini sesuai dengan kebutuhan secara benar dan tepat</p> {% endcomment %}
+
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-primary">
+          <div class="card-body">
+            <div class="card-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h5 class="card-title">Pelanggan</h5>
+            <p class="card-text">Jumlah <b>{{jmlCustumer}}</b></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-secondary">
+          <div class="card-body">
+            <div class="card-icon">
+              <i class="fas fa-box"></i>
+            </div>
+            <h5 class="card-title">Produk</h5>
+            <p class="card-text">Jumlah <b>{{jmlProduk}}</b></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-success">
+          <div class="card-body">
+            <div class="card-icon">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h5 class="card-title">Transaksi Selesai</h5>
+            <p class="card-text">Jumlah <b>{{jmlTransaksi}}</b></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-danger">
+          <div class="card-body">
+            <div class="card-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h5 class="card-title">Kategori</h5>
+            <p class="card-text">Jumlah <b>{{jmlKategori}}</b></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br/>
+    {% comment %} <h3>Grafik Penjualan Produk-Produk Glamora Perbulan pada tahun {{tahun_ini}}</h3> {% endcomment %}
+    <canvas id="transaksiChart" class="mt-4"></canvas>
+   
+
+  </div>
+  {% comment %} <script>
+    $(document).ready(function() {
+      $('#dataTable').DataTable();
+    });
+
+
+    $(document).ready(function() {
+        var daftarBulan = JSON.parse('{{ daftar_bulan|safe }}');
+        var dataTransaksi = JSON.parse('{{ data_transaksi|safe }}');
+
+        // Mendapatkan daftar nama bulan
+        var namaBulan = daftarBulan.map(function(bulan) {
+            return bulan.nama;
+        });
+
+        // Membuat grafik menggunakan Chart.js
+        var ctx = document.getElementById('transaksiChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: namaBulan,
+                datasets: [{
+                    label: 'Jumlah Transaksi',
+                    data: dataTransaksi,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+
+
+    
+  </script> {% endcomment %}
+
+
+  {% endblock content %}

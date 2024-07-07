@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<nav class="breadcrumb-bg">
+    <div class="container no-index">
+        <div class="breadcrumb">
+            <ol>
+                <li>
+                    <a href="{% url 'beranda' %}">
+                        <span>Beranda</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span>Hasil Pencarian</span>
+                    </a>
+                </li>
+            </ol>
+        </div>
+       
+    </div>
+</nav>
+
+<div class="container">
+    <div class="content">
+        <div class = "toolbar-amount">
+            <span>Jumlah hasil pencarian: {{jmlproduk}}</span>
+        </div>
+        <div class="row">          
+            <div class="col-sm-12 col-lg-12 col-md-12">
+                <div class="tab-content">
+                    <div class="row">
+                        {% for cari in hasilcari %}
+                        <div class="item text-center col-md-3">
+                            <div class="product-miniature js-product-miniature item-one first-item">
+                                <div class="thumbnail-container border">
+                                    <a href="{% url 'produk' cari.kategori.slug cari.slug %}">
+                                        <img class="img-fluid image-cover" src="{{cari.gambar.url}}" alt="{{cari.nama_produk}}">
+                                        {% if cari.gambar_satu %}
+                                        <img class="img-fluid image-secondary" src="{{cari.gambar_satu.url}}" alt="img">
+                                        {% endif %}
+                                        {% if cari.gambar_dua %}
+                                        <img class="img-fluid image-secondary" src="{{cari.gambar_dua.url}}" alt="img">
+                                        {% endif %}
+                                        {% if cari.gambar_tiga %}
+                                        <img class="img-fluid image-secondary" src="{{cari.gambar_tiga.url}}" alt="img">
+                                        {% endif %}
+                                        {% if cari.gambar_empat %}
+                                        <img class="img-fluid image-secondary" src="{{cari.gambar_empat.url}}" alt="img">
+                                        {% endif %}
+                                        {% if cari.gambar_lima %}
+                                        <img class="img-fluid image-secondary" src="{{cari.gambar_lima.url}}" alt="img">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="product-description">
+                                    <div class="product-groups">
+                                        <div class="product-title">
+                                            <a href="{% url 'produk' cari.kategori.slug cari.slug %}">{{cari.nama_produk}} ({{cari.stock}})</a>
+                                        </div>
+                                        <div class="product-group-price">
+                                            <div class="product-price-and-shipping">
+                                                {% if cari.diskon == 0 %}
+                                                <span class="price">Rp. {{cari.harga|intcomma}}</span>
+                                                {% else %}
+                                                <span class="price">Rp. {{cari.setela_diskon|intcomma}}</span>
+                                                <del class="regular-price">Rp. {{cari.harga|intcomma}}</del>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-buttons d-flex justify-content-center">
+                                        <form action="{% url 'cart_add' cari.id %}" method="post" class="formAddToCart">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button class="add-to-cart" type="submit" data-button-action="add-to-cart">
+                                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                        <a href="{% url 'produk' cari.kategori.slug cari.slug %}" class="quick-view hidden-sm-down" data-link-action="quickview">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mt-40">
+                            <div class="alert alert-danger">Hasil Pencarian Nihil</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

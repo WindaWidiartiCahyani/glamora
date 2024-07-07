@@ -1,0 +1,91 @@
+{% extends "admin.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+	
+
+  <div class="content">
+    <h1>{{judul}}</h1>
+    {% comment %} <p>Gunakan {{judul}} ini sesuai dengan kebutuhan secara benar dan tepat</p> {% endcomment %}
+    <br/>
+    <hr/>
+
+    <div class="container">
+       
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>No</th>
+                  <th>No Transaksi</th>
+                  <th>Customer</th>
+                  <th>Status</th>
+                  <th>Total Jumlah</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for t in data %}
+              <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ t.no_transaksi }}</td>
+                  <td>{{ t.custumer }}</td>
+                  <td>{{ t.status }}</td>
+                  <td>Rp. {{ t.total_transaksi | intcomma }}</td>
+                  <td>
+                      <button class="btn btn-primary detail-btn" data-notransaksi="{{ t.no_transaksi }}">Detail</button>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+
+  <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="detailModalLabel">Detail Transaksi</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <!-- Detail transaksi content will be loaded here -->
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+
+
+
+  </div>
+  <script>
+    $(document).ready(function() {
+      $('.detail-btn').click(function() {
+        var notransaksi = $(this).data('notransaksi');
+        var detailUrl = "{% url 'detail_transaksi' 0 %}";  // Ganti 0 dengan nilai placeholder yang sesuai
+    
+        // Mengganti placeholder dengan nilai yang diinginkan
+        detailUrl = detailUrl.replace("0", notransaksi);
+    
+        // Mengirim permintaan AJAX ke URL yang telah diubah
+        $.ajax({
+          type: 'GET',
+          url: detailUrl,
+          success: function(data) {
+            $('#detailModal .modal-body').html(data);
+            $('#detailModal').modal('show');
+          }
+        });
+      });
+    });
+    
+</script>
+  {% endblock content %}
+
+
+
+   

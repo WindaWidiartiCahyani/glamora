@@ -1,0 +1,181 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Checkout</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .cart {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .popup {
+      background-color: #f7f7f7;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .row span:first-child {
+      font-weight: bold;
+      flex-basis: 25%;
+    }
+
+    .row span:nth-child(2),
+    .row span:nth-child(3) {
+      flex-basis: 25%;
+    }
+
+    .row span:last-child {
+      flex-basis: 25%;
+      text-align: right;
+    }
+
+    .checkout-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .checkout-button:hover {
+      background-color: #45a049;
+    }
+
+    .total {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table tr {
+      border-bottom: 1px solid #ddd;
+    }
+
+    table td {
+      padding: 8px;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .row {
+        flex-wrap: wrap;
+      }
+
+      .row span {
+        flex-basis: 50%;
+        text-align: left;
+      }
+
+      .row span:last-child {
+        text-align: right;
+      }
+    }
+  </style>
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-Mwrb_UsPSl3P4h3x"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class='cart'>
+    <input type='hidden' id='snap_token' value="{{ token }}" />
+    <div class='popup'>
+      <div class='header'>
+        <span>No</span>
+        <span>Nama Produk</span>
+        <span>Jumlah</span>
+        <span>Sub Total</span>
+      </div>
+      <table>
+        {% for row in detail %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ row.produk.nama_produk }}</td>
+          <td>{{ row.jumlah }}</td>
+          <td>Rp.{{ row.sub_total }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      <div class='total'>
+        <span>Total:</span>
+        <span id="total-amount">Rp. {{ transaksi.total_transaksi|intcomma }}</span>
+      </div>
+      <div class='row checkout'>
+        <button class='checkout-button'>Bayar Sekarang</button>
+      </div>
+    </div>
+
+    <form id="payment-form" method="post" action="{% url 'midtrans_callback' %}">
+      {% csrf_token %}
+      <input type="hidden" name="result_data" id="result-data" value="">
+    </form>
+
+    <script>
+      var token = document.querySelectorAll('#snap_token')[0].value;
+      var totalAmount = document.getElementById('total-amount');
+
+      var resultData = document.getElementById('result-data');
+      var checkoutBtn = document.querySelectorAll('.checkout-button')[0];
+      checkoutBtn.onclick = function () {
+        console.log('opening snap popup:');
+
+        // Open Snap popup with defined callbacks.
+        snap.pay(token, {
+          onSuccess: function (result) {
+            console.log("SUCCESS", result);
+            $("#result-data").val(JSON.stringify(result))
+            $("#payment-form").submit();
+
+          },
+          onPending: function (result) {
+            console.log("Payment pending", result);
+            $("#result-data").val(JSON.stringify(result))
+            $("#payment-form").submit();
+          },
+          onError: function () {
+            console.log("Payment error");
+            $("#result-data").val(JSON.stringify(result))
+            $("#payment-form").submit();
+          }
+        });
+       
+
+      }
+    </script>
+  </div>
+</body>
+
+</html>

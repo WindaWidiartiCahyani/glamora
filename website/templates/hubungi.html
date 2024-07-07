@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- main content -->
+<br/>
+<br/>
+
+
+<div class="main-content mb-4" >
+    <div id="wrapper-site">
+        <div id="content-wrapper">
+            
+            <!-- breadcrumb -->
+            <nav class="breadcrumb-bg">
+                <div class="container no-index">
+                    <div class="breadcrumb">
+                        <ol>
+                            <li>
+                                <a href="{% url 'beranda' %}">
+                                    <span>Beranda</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>Hubungi</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </nav>
+            <div id="main">
+                <div class="page-home">
+                    <div class="container">
+                        <h2 class="text-center title-page"> <br> Hubungi Kami </br></h2>
+                        <div class="row-inhert">
+                            
+                            <div class="input-contact">
+                                
+                                
+                                <p class="icon text-center">
+                                    <a href="#"> 
+                                        <img src="{% static 'img/other/contact_mess.png' %}" alt="img">
+                                    </a>
+                                </p>
+                                {% if messages %}
+                                    <ul>
+                                    {% for message in messages  %}
+                                        <li class="{{message.tags}}">{{ message }}</li>
+                                       
+                                    {% endfor %}
+                                    </ul> 
+                                {% endif %}
+                                <div class="d-flex justify-content-center">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <div class="contact-form">
+                                            <form action="{% url 'hubungi' %}" method="post">
+                                                {% csrf_token %}                                       
+                                                <div class="form-fields">
+                                                    <div class="form-group row">
+                                                        <div class="col-md-6">
+                                                            <input class="form-control" name="nama" placeholder="Isi Nama Anda">
+                                                        </div>
+                                                        <div class="col-md-6 margin-bottom-mobie">
+                                                            <input class="form-control" type="text" name="whatsapp" placeholder="Isi No Whatsapp">
+                                                          
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-md-6">
+                                                            <input class="form-control" type="text" name="subject" placeholder="Isi subject">
+                                                            
+                                                        </div>
+                                                        <div class="col-md-6 margin-bottom-mobie">
+                                                           
+                                                            <input type="email" class="form-control" name="email" placeholder="Isi Email">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group row">
+                                                        <div class="col-md-12">
+                                                            <textarea class="form-control" name="pesan" placeholder="Isi Pesan" rows="10"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <button class="btn" type="submit" name="submitMessage">
+                                                       
+                                                        <img class="img-fl" src=" {% static 'img/other/contact_email.png' %}" alt="img">Send message
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}  
