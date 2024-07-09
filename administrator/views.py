@@ -7,6 +7,7 @@ from website.decorators import ijinkan_pengguna,pilihan_login
 from django.db.models import Count, Q, Sum
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.contrib import messages
 
 import json
 
@@ -344,79 +345,102 @@ def kontak_admin(request):
 @login_required(login_url='loginpage')
 @ijinkan_pengguna(yang_diizinkan=['administrator']) 
 def laporan(request):
-    context = {
+    list_tahun = [{'tahun': str(i)} for i in range(2020, datetime.now().year+1)]
+    list_bulan = [
+        {'nama': 'Januari', 'value': 1},
+        {'nama': 'Februari', 'value': 2},
+        {'nama': 'Maret', 'value': 3},
+        {'nama': 'April', 'value': 4},
+        {'nama': 'Mei', 'value': 5},
+        {'nama': 'Juni', 'value': 6},
+        {'nama': 'Juli', 'value': 7},
+        {'nama': 'Agustus', 'value': 8},
+        {'nama': 'September', 'value': 9},
+        {'nama': 'Oktober', 'value': 10},
+        {'nama': 'November', 'value': 11},
+        {'nama': 'Desember', 'value': 12}
+    ]
+    buat_laporan = Transaksi.objects.filter(status='Lunas')
+    now = datetime.now()
+    current_year = now.year
+    total_pembelian = Transaksi.objects.filter(status='Lunas', date_created__year=current_year).aggregate(total_pembelian=Sum('total_transaksi'))['total_pembelian']
+    custom_pembelian = "Rp. {:,.2f}".format(total_pembelian)
     
+    context = {
         'judul': 'Halaman Laporan',
         'menu': 'laporan',
-        
+        'laporan': buat_laporan,
+        'total': custom_pembelian,
+        'list_tahun': list_tahun,
+        'list_bulan': list_bulan
     }
-    
-
-    if request.method == 'POST':
-        jenis_laporan = request.POST.get('jenis_laporan')
-        
-        if jenis_laporan == 'harian':
-            tanggal_dari = datetime.datetime.strptime(request.POST.get('tanggal_dari'), '%Y-%m-%d').date()
-            tanggal_sampai = datetime.datetime.strptime(request.POST.get('tanggal_sampai'), '%Y-%m-%d').date()
-
-            # Query transaksi berdasarkan rentang tanggal
-            transaksi_list = Transaksi.objects.filter(date_created__range=[tanggal_dari, tanggal_sampai])
-
-        elif jenis_laporan == 'bulanan':
-            bulan = int(request.POST.get('bulan'))
-
-            # Query transaksi berdasarkan bulan
-            transaksi_list = Transaksi.objects.filter(date_created__month=bulan)
-
-        elif jenis_laporan == 'tahunan':
-            tahun = int(request.POST.get('tahun'))
-
-            # Query transaksi berdasarkan tahun
-            transaksi_list = Transaksi.objects.filter(date_created__year=tahun)
-            
-        else:
-            transaksi_list = Transaksi.objects.all()
-        
-        # Membuat file Excel
-        workbook = Workbook()
-        sheet = workbook.active
-        
-        # Menulis header
-        sheet.cell(row=1, column=1, value='No. Transaksi')
-        sheet.cell(row=1, column=2, value='Tanggal')
-        sheet.cell(row=1, column=3, value='Alamat Kirim')
-        sheet.cell(row=1, column=4, value='Total Transaksi')
-        
-        # Menulis data transaksi
-        row = 2
-        for transaksi in transaksi_list:
-            sheet.cell(row=row, column=1, value=transaksi.no_transaksi)
-            sheet.cell(row=row, column=2, value=transaksi.date_created.strftime('%d-%m-%Y'))
-            sheet.cell(row=row, column=3, value=transaksi.alamat_kirim)
-            sheet.cell(row=row, column=4, value=transaksi.total_transaksi)
-            row += 1
-        
-        # Mengatur lebar kolom
-        column_widths = [15, 12, 20, 15]
-        for i, width in enumerate(column_widths, start=1):
-            sheet.column_dimensions[chr(64 + i)].width = width
-        
-        # Mengatur alignment
-        for row in sheet.iter_rows(min_row=1, max_row=1):
-            for cell in row:
-                cell.alignment = Alignment(horizontal='center', vertical='center')
-        
-        # Mengatur nama file
-        filename = 'laporan_transaksi.xlsx'
-        
-        # Mengirim file Excel sebagai response
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        workbook.save(response)
-        
-        return response
     return render(request, 'laporan.html',context)
-    
+
+
+def export_laporan(request):
+    tahun_filter = request.GET.get('tahun')
+    bulan_filter = request.GET.get('bulan')
+    tanggal_filter = request.GET.get('tanggal')
+
+    # Validasi filter: Pastikan ada setidaknya satu filter yang dipilih
+    if not (tahun_filter or bulan_filter or tanggal_filter):
+        messages.error(request, 'Silakan pilih setidaknya satu filter.')  # type: ignore
+        return redirect('laporan')
+
+    # Validasi filter: Pastikan tahun dipilih jika bulan dipilih
+    if bulan_filter and not tahun_filter:
+        messages.error(request, 'Silakan pilih tahun terlebih dahulu.')  # type: ignore
+        return redirect('laporan')
+
+    transaksi = Transaksi.objects.all()
+
+    if tahun_filter:
+        transaksi = transaksi.filter(date_created__year=tahun_filter)
+        if bulan_filter:
+            transaksi = transaksi.filter(date_created__month=bulan_filter)
+        if tanggal_filter:
+            tanggal_filter = datetime.strptime(tanggal_filter, '%Y-%m-%d').date()
+            transaksi = transaksi.filter(date_created__day=tanggal_filter.day)
+    elif tanggal_filter:
+        tanggal_filter = datetime.strptime(tanggal_filter, '%Y-%m-%d').date()
+        transaksi = transaksi.filter(date_created__year=tanggal_filter.year,
+                                     date_created__month=tanggal_filter.month,
+                                     date_created__day=tanggal_filter.day)
+
+    transaksi = transaksi.order_by('date_created')
+
+    if not transaksi.exists():
+        messages.error(request, 'Data yang Anda minta tidak ada.')  # type: ignore
+        return redirect('laporan')
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Laporan Transaksi"
+
+    ws.append(['No', 'No Transaksi', 'Nama Customer', 'Keterangan Pesanan', 'Status', 'Total Transaksi', 'Tanggal Pemesanan'])
+
+    for i, t in enumerate(transaksi, start=1):
+        ws.append([
+            i,
+            t.no_transaksi,
+            t.custumer.nama,  # Pastikan ini sesuai dengan relasi yang benar
+            t.keterangan_pesanan,
+            t.status,
+            t.total_transaksi,
+            t.date_created.strftime('%Y-%m-%d %H:%M:%S')  # Format tanggal sesuai kebutuhan
+        ])
+
+    for col in ws.columns:
+        for cell in col:
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="laporan_transaksi.xlsx"'
+
+    wb.save(response)
+
+    return response
+
 
 @login_required(login_url='loginpage')
 @ijinkan_pengguna(yang_diizinkan=['administrator']) 
@@ -429,6 +453,8 @@ def transaksi_list(request):
         
     }
     return render(request, 'admin_transaksi.html', context)
+
+
 @login_required(login_url='loginpage')
 @ijinkan_pengguna(yang_diizinkan=['administrator']) 
 def detail_transaksi(request, notransaksi):
