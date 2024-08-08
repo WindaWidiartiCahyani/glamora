@@ -1,10 +1,8 @@
 from django.db import models
 from website.models import Produk, Custumer
-from ckeditor.fields import RichTextField
-from django_resized import ResizedImageField
+
 from django import template
 from django.contrib.humanize.templatetags.humanize import intcomma
-
 
 
 class Transaksi(models.Model):
@@ -23,6 +21,8 @@ class Transaksi(models.Model):
     )
     custumer = models.ForeignKey(Custumer, null=True, blank=False, on_delete=models.SET_NULL)
     no_transaksi = models.CharField(max_length=200, blank=False, null=True)
+    wa_kirim = models.CharField(max_length=200, blank=True, null=True,verbose_name="No Whatsapp")
+    alamat_kirim = models.CharField(max_length=300, blank=True,null=True)
     keterangan_pesanan = models.CharField(max_length=200, blank=True, null=True, choices=KT)
     status = models.CharField(max_length=200, default="Belum Lunas", blank=True, null=True, choices=Status)
     total_transaksi = models.BigIntegerField(blank=True, null=True)
@@ -43,10 +43,8 @@ class Transaksi(models.Model):
 
     def __str__(self):
          return f"{self.no_transaksi}-({self.total_transaksi})" 
-    
     class Meta:
         verbose_name_plural ="Transaksi"
-
     @property
     def total_pemabayaran(self):
         hargavalid = str(self.total_transaksi).replace('.0','')
@@ -57,29 +55,26 @@ class Transaksi(models.Model):
     
 class DetailTransaksi(models.Model):
     no_transaksi = models.CharField(max_length=200, blank=False, null=True)
-    produk = models.ForeignKey(Produk, null=True, on_delete=models.SET_NULL)
+    produk = models.ForeignKey(Produk, null= True, on_delete=models.SET_NULL)
     jumlah = models.IntegerField(blank=True, null=True)
-    
     class Meta:
         ordering = ('-no_transaksi', )
-        
 
     def __str__(self):
          nilai = str(self.produk.setela_diskon)
          hargavalid = (nilai.replace(".0",""))
          return f"No Transaksi: {self.no_transaksi} Produk: ({self.produk}) Jumlah: ({self.jumlah})  Harga: ({hargavalid})" 
-    
+
     @property
     def harga(self):
         total = self.produk.setela_diskon 
         hargavalid = str(total).replace('.0','')
         hargafik = int(hargavalid)
-        hargarupiah = intcomma(hargafik)
-        fikharga =  f"Rp. {str(hargarupiah)}"
+        # hargarupiah = intcomma(hargafik)
+        # fikharga =  f"Rp. {str(hargarupiah)}"
 
 
-        return fikharga
-
+        return hargafik
     @property
     def sub_total(self):
         total = self.produk.setela_diskon * self.jumlah

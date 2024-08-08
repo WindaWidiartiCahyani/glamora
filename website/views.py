@@ -300,6 +300,8 @@ class CheckoutView(View):
         }
         grantotal = request.POST.get('grantotal')
         keterangan = request.POST.get('keterangan')
+        alamat_kirim = request.POST.get('alamat_kirim')
+        wa_kirim = request.POST.get('wa_kirim')  
         
         no_transaksi = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         if grantotal == "0" :
@@ -318,6 +320,8 @@ class CheckoutView(View):
         transaksi = Transaksi.objects.create(no_transaksi = no_transaksi,
                                               custumer = konsumen,
                                               keterangan_pesanan = keterangan,
+                                              alamat_kirim = alamat_kirim,
+                                              wa_kirim=wa_kirim,
                                               total_transaksi = grantotal )
         transaksi.save()
         keranjang = Cart(request)
@@ -338,7 +342,7 @@ class CheckoutView(View):
         chats = ChatID.objects.filter(aktif=True)
         for chat in chats:
             grantotal_formatted = f"Rp. {intcomma(grantotal)}"
-            message = f"Assalamualaikum Wr Wb,\n\nNo Transaksi: <b>{no_transaksi}</b>\nKeterangan_pesanan: <b>{keterangan}</b>\nCustumer: <b>{konsumen}</b>\nTotal Transaksi:<b>{grantotal}</b>\n\nTerimakasih, Salam Glamora Store dan Wassalamualaikum Wr Wb."
+            message = f"Assalamualaikum Wr Wb,\n\nNo Transaksi: <b>{no_transaksi}</b>\nKeterangan_pesanan: <b>{keterangan}</b>\nCustumer: <b>{konsumen}</b>\nAlamat_kirim: <b>{alamat_kirim}</b>\nWa_kirim: <b>{wa_kirim}</b>\nTotal Transaksi:<b>{grantotal}</b>\n\nTerimakasih, Salam Glamora Store dan Wassalamualaikum Wr Wb."
             send_telegram_message(chat.chatid, message)
 
            

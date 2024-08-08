@@ -61,17 +61,31 @@
                                                             <input type="hidden" name="id_customer" value="">
                                                             <div class="form-group row">
                                                                 <label>Pilih Keterangan Jemput atau Antar</label>
-                                                                <select class="form-control"  name="keterangan">
-                                                                    <option value="">-- Pilih Keterangan --</option>
+                                                                <select class="form-control" id="select_box" name="keterangan">
+                                                                    <option value="0">-- Pilih Keterangan --</option>
                                                                     <option value="Jemput">Jemput</option>
                                                                     <option value="Antar">Antar</option>
                                                                 </select>
                                                                
                                                             </div>
                                                            
-                                                            
+                                                            <div id="Jemput" class="hilang">
+
+                                                            </div>
+                            
+                                                            <div id="Antar" class="hilang">
+                                                                <div class="form-group row">
+                                                                    <label for="exampleFormControlTextarea1">Alamat **) </label>
+                                                                    <textarea class="form-control" name="alamat_kirim" rows="3"></textarea>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="exampleInputEmail1">No Whatsapp **)</label>
+                                                                    <input type="text" class="form-control" name="wa_kirim" placeholder="08xxxxxxxxxx">
+                                                                </div>
+                                                            </div>
                                                            
                                                         </div>
+                                                        
                                                         <div class="clearfix">
                                                             <div class="row">
                                                                 
@@ -92,18 +106,18 @@
                                         <div class="cart-summary">
                                             <div class="cart-detailed-totals">
                                                 <div class="cart-summary-products">
-                                                    <div class="summary-label">Ada 2 item di keranjang Anda</div>
+                                                    <div class="summary-label"></div>
                                                 </div>
                                                 <div class="cart-summary-line" id="cart-subtotal-products">
                                                     <span class="label js-subtotal">
-                                                        Total Produk:
+                                                        Total Bahan:
                                                     </span>
                                                     <span class="value">Rp. {{keranjang.get_total_price|intcomma}}</span>
                                                 </div>
                                                 {% with totail_items=keranjang|length %}
                                                 <div class="cart-summary-line" id="cart-subtotal-shipping">
                                                     <span class="label">
-                                                        Total Jumlah Produk:
+                                                        Total Jumlah Bahan:
                                                         
                                                     {% if keranjang|length > 0 %}
                                                     {{ totail_items }}
@@ -113,7 +127,7 @@
                                                     {% endif %}
                         
                                                     </span>
-                                                    <span class="value">Produk</span>
+                                                    <span class="value">Bahan</span>
                                                     <div>
                                                         <small class="value"></small>
                                                     </div>
@@ -121,16 +135,16 @@
                                                 {% endwith %}
                                             </div>
                                         </div>
-                                        {% comment %} <div id="block-reassurance">
+                                        <div id="block-reassurance">
                                             <ul>
                                                 <li>
-                                                     <div class="block-reassurance-item">
+                                                    <div class="block-reassurance-item">
                                                         
                                                         <img src="{% static 'img/product/check1.png' %}" alt="Jika Pilih <b>dijemput</b> setelah melakukan Pembayaran silakan jemput ke toko Senin - Sabtu / 08.00 - 16.00
                                                         (Kecuali Hari Libur)">
                                                         <span>Jika Pilih <b>dijemput</b> setelah melakukan Pembayaran silakan jemput ke toko Senin - Sabtu / 08.00 - 16.00
                                                             (Kecuali Hari Libur)</span>
-                                                    </div> 
+                                                    </div>
                                                 </li>
                                                 <li>
                                                     
@@ -139,13 +153,14 @@
                                                         <span>Jika Pilih <b>Antar</b> kami pihak toko akan menghubungi Pihak pelanggan terkait biaya Ongkir (Ongkos Kirim)</span>
                                                     </div>
                                                 </li>
-                                                <li>
+                                                {% comment %} <li>
                                                     <div class="block-reassurance-item">
                                                         <img src="{% static 'img/product/check3.png' %}" alt="Kebijakan pengembalian akan di atur jika ada kesepatan sebelumnya">
                                                         <span>Kebijakan pengembalian akan di atur jika ada kesepatan sebelumnya</span>
-                                                    </div> 
+                                                    </div>
+                                                </li> {% endcomment %}
                                             </ul>
-                                        </div> {% endcomment %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -156,4 +171,15 @@
         </div>
     </div>
 </div>
+<script>
+
+    $('#select_box').change(function () {
+    var select=$(this).find(':selected').val();        
+     $(".hilang").css("display", "none");
+     $('#' + select).css("display", "block");
+    
+            }).change();
+    
+    
+</script>	
 {% endblock content %}  
