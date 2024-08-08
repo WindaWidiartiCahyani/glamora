@@ -49,7 +49,7 @@
                 <!-- logo -->
                 <div class="mobile-logo">
                     <a href="">
-                        {% comment %} <img class="logo-mobile img-fluid" src="{% static 'img/home/logo-mobie.png' %}" alt="Prestashop_Furnitica"> {% endcomment %}
+                         <img class="logo-mobile img-fluid" src="{% static 'img/home/Glogo.png' %}" alt="Prestashop_Furnitica"> 
                     </a>
                 </div>
 
@@ -60,8 +60,8 @@
             </div>
 
             <!-- search -->
-            {% comment %} <div id="mobile_search" class="d-flex"> {% endcomment %}
-                {% comment %} <div id="mobile_search_content">
+                <div id="mobile_search" class="d-flex"> 
+                    <div id="mobile_search_content">
                     <form action="{% url 'cari' %}" class="hm-searchbox" method= "GET">
                         
                         <input type="text" name="kata" placeholder="">
@@ -69,7 +69,7 @@
                             <i class="fa fa-search"></i>
                         </button>
                     </form>
-                </div> {% endcomment %}
+                </div> 
                 {% with totail_items=keranjang|length %}
                 <div class="desktop_cart">
                     <div class="blockcart block-cart cart-preview tiva-toggle">
@@ -543,17 +543,27 @@
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div id="megamenu" class="clearfix">
                         <ul class="menu level1">
-                            <li class="item home-page has-sub">
-                                <span class="arrow collapsed" data-toggle="collapse" data-target="#home1" aria-expanded="true" role="status">
-                                    <i class="zmdi zmdi-minus"></i>
-                                    <i class="zmdi zmdi-plus"></i>
-                                </span>
-
-                                <a href="" title="Home">
-                                    <i class="fa fa-home" aria-hidden="true"></i>Beranda
-                                </a>
-                               
+                            <li class="{% if menu == "beranda" %}nav-link{% endif %}">
+                                <a href="{% url 'beranda' %}" class="parent">Beranda</a>
+                              
                             </li>
+                        
+                            <li class="{% if menu == "profil" %}nav-link{% endif %}">
+                                <a href="{% url 'profil' %}" class="parent">Profil</a>
+                                
+                            </li>
+                        
+                            <li class="{% if menu == "hubungi" %}nav-link{% endif %}">
+                                <a href="{% url 'hubungi' %}" class="parent">Hubungi Kami</a>
+                                
+                            </li>
+
+                                    
+                           
+                           
+                        
+                        
+                        </ul>
                           
                         </ul>
                     </div>
